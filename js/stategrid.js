@@ -94,7 +94,7 @@ function clicked(d) {
     var cid = c.id+"";
     if(cid.slice(0,sid.length) === sid && cid.length - sid.length == 3) counties.push(c);
   })
-  console.log("counties", counties)
+  console.log("filtered counties", counties)
   var countyPaths = mapsvg
   	.selectAll("path.county")
     .data(counties)
