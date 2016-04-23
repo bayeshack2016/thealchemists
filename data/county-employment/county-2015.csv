@@ -1,4 +1,4 @@
-,LAUS,FIPS_state,FIPS_county,county_state,year,labor_force,employed,unemployed,unemployment_rate,county,state
+index,LAUS,FIPS_state,FIPS_county,county_state,year,labor_force,employed,unemployed,unemployment_rate,county,state
 0,CN0100100000000,1.0,1.0,"Autauga County, AL",2015,25308.0,23981.0,1327.0,5.2,Autauga , AL
 1,CN0100300000000,1.0,3.0,"Baldwin County, AL",2015,87316.0,82525.0,4791.0,5.5,Baldwin , AL
 2,CN0100500000000,1.0,5.0,"Barbour County, AL",2015,8625.0,7854.0,771.0,8.9,Barbour , AL
