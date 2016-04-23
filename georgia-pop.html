@@ -1,0 +1,130 @@
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script src="//d3js.org/queue.v1.min.js"></script>
+<script src="//d3js.org/topojson.v1.min.js"></script>
+<link rel="stylesheet" href="style.css"></link>
+
+<svg id="map"></svg>
+<svg id="state-grid" width=400 height=200></svg>
+<script id="grid" type="text/plain">
+                              ME
+               WI          VT NH
+WA ID MT ND MN IL MI    NY MA
+OR NV WY SD IA IN OH PA NJ CT RI
+CA UT CO NE MO KY WV VA MD DE
+   AZ NM KS AR TN NC SC
+         OK LA MS AL GA
+HI AK    TX             FL
+</script>
+
+<script>
+// Map setup
+var mapsvg = d3.select("#map").append("g");
+var bbox = d3.select("#map").node().getBoundingClientRect();
+console.log("bbox", bbox)
+var mapwidth = bbox.width;
+var mapheight = bbox.height;
+var scale0 = 1000;
+
+var centered;
+var selected;
+
+var allCounties = []
+
+var zoom = d3.behavior.zoom()
+  .translate([mapwidth / 2, mapheight / 2])
+  .scale(scale0)
+  .scaleExtent([scale0, 10 * scale0])
+  .on("zoom", zoomed);
+
+var projection = d3.geo.albersUsa()
+  .scale(scale0)
+  .translate([mapwidth / 2, mapheight / 2]);
+
+var path = d3.geo.path()
+  .projection(projection);
+
+function zoomed() {
+  projection
+    .translate(zoom.translate())
+    .scale(zoom.scale());
+
+  mapsvg.selectAll("path")
+    .attr("d", path);
+
+}
+
+mapsvg.call(zoom)
+</script>
+
+<script src="js/stategrid.js"></script>
+
+<script>
+// DATA
+queue()
+    .defer(d3.json, "data/us-named.topojson")
+    .defer(d3.csv, "data/PEP_2014_PEPAGESEX_with_ann.csv")
+    .defer(d3.csv, "data/county-employment/county-2015.csv")
+    .await(ready);
+
+function ready(error, us, pop, employment2015) {
+  var states = topojson.feature(us, us.objects.states).features
+  allCounties = topojson.feature(us, us.objects.counties).features;
+  countyHash = {}
+  allCounties.forEach(function(county) {
+    countyHash[county.properties.id] = county; // string FIPS code: STXXX eg 13000 wher ST is state fips code
+  })
+
+  mapsvg
+  .selectAll("path")
+    .data(states)
+  .enter().append("path").classed("state-boundary", true)
+    .attr("d", path)
+
+  var state = states.filter(function(d) {
+    // list of state FIPS codes
+    return d.id === 13; //Georgia
+  })[0]
+  console.log("georgia", state)
+  clicked(state);
+
+
+  /////////////////////////////////////////////////////////////////////////////
+  // POPULATION (CENSUS)
+  console.log("population", pop)
+  //cen42010sex0_age18to64
+  workingPop = []
+  pop.forEach(function(d) {
+    var fips = d["GEO.id2"];
+    var pop = +d["cen42010sex0_age18to64"]
+    if(fips.slice(0,2) === state.properties.id) {
+      countyHash[fips].properties.pop = pop
+      workingPop.push({
+        fips: fips,
+        pop: pop
+      })
+    }
+  })
+  console.log("working pop", workingPop)
+  var popscale = d3.scale.linear()
+  .domain([0, d3.max(workingPop, function(d) { return d.pop })])
+  .range(["#fff", "#00cc66"])
+
+  var countyPaths = mapsvg
+  	.selectAll("path.county")
+    .style({
+      fill: function(d) {
+        return popscale(d.properties.pop)
+      }
+    })
+  /////////////////////////////////////////////////////////////////////////////
+
+  /////////////////////////////////////////////////////////////////////////////
+  // EMPLOYMENT (BLS)
+  console.log("employment", employment2015)
+  /////////////////////////////////////////////////////////////////////////////
+}
+
+</script>
