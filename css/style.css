@@ -2,12 +2,15 @@ body {
   font-size: 14px;
   font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
   margin: 0px;
-  background: #fcfcfc;
   line-height: 1.45em;
   background-color: #111;
  }
 
 
+.title {
+  color: #fff;
+  text-align: center;
+}
 
 /* /////////////////////////////////////////////////////////////////////
 Map
@@ -71,7 +74,7 @@ Parcoords
 
 #parcoords {
   margin-top: 20px;
-  height: 230px;
+  height: 200px;
   background-color: #111;
 }
 #parcoords text {

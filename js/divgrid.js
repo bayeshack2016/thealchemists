@@ -1,4 +1,5 @@
 // http://bl.ocks.org/3687826
+var format = d3.format("3n")
 d3.divgrid = function(config) {
   var columns = [];
 
@@ -44,7 +45,11 @@ d3.divgrid = function(config) {
     cells.exit().remove();
 
     selection.selectAll(".cell")
-      .text(function(d) { return d; });
+      .text(function(d) {
+        if(isNaN(d))
+          return d;
+        return format(d)
+      });
 
     return dg;
   };

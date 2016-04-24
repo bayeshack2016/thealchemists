@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="css/d3.parcoords.css"></link>
 <link rel="stylesheet" href="css/style.css"></link>
 
-<h2 class="title">Georgia 2004</h2>
+<h2 class="title">Changes per county in Georgia from 2004 to 2014</h2>
 <div id="parcoords" class="parcoords"></div>
 <div id="parcoords-grid-container">
   <div id="parcoords-grid"></div>
@@ -74,10 +74,10 @@ function zoomed() {
 queue()
     .defer(d3.json, "data/us-named.topojson")
     .defer(d3.csv, "data/ga/counties-joined-2004.csv")
-    //.defer(d3.csv, "data/counties-joined-2014.csv")
+    .defer(d3.csv, "data/ga/counties-joined-2014.csv")
     .await(ready);
 
-function ready(error, us, rawCounties) {
+function ready(error, us, rawCounties2004, rawCounties2014) {
   var states = topojson.feature(us, us.objects.states).features
   geoCounties = topojson.feature(us, us.objects.counties).features;
   countyHash = {}
@@ -85,8 +85,8 @@ function ready(error, us, rawCounties) {
     countyHash[county.properties.id] = county; // string FIPS code: STXXX eg 13000 wher ST is state fips code
   })
   var counties = []
-  rawCounties.forEach(function(county) {
-    ch = countyHash[county.id]
+  rawCounties2014.forEach(function(county) {
+    var ch = countyHash[county.id]
     if(!ch) return;
     var props = {}
     var keys = Object.keys(county);
@@ -99,6 +99,20 @@ function ready(error, us, rawCounties) {
       }
     })
     ch.properties = props; // string FIPS code: STXXX eg 13000 wher ST is state fips code
+    counties.push(props)
+  })
+  rawCounties2004.forEach(function(county) {
+    var ch = countyHash[county.id]
+    if(!ch) return;
+    var cc = ch.properties
+    var props = {}
+    var keys = Object.keys(county);
+    keys.forEach(function(key) {
+      var prop = rekey[key]
+      if(prop && prop !== "name" && prop !== "id") {
+        cc[prop] -= +county[key]
+      }
+    })
     counties.push(props)
   })
 
@@ -235,7 +249,7 @@ function ready(error, us, rawCounties) {
   };
   // interaction on the map
   var ratescale = d3.scale.linear()
-  .domain([0, d3.max(counties, function(d) { return d['Unemployment rate']})])
+  .domain(d3.extent(counties, function(d) { return d['Unemployment rate']}))
   .range(["#111", "steelblue"])
 
   var countyPaths = mapsvg
@@ -278,7 +292,7 @@ function ready(error, us, rawCounties) {
   // FORCE LAYOUT
   // starting with example from @mbostock http://bl.ocks.org/mbostock/3231298
   var rscale = d3.scale.sqrt()
-    .domain([0, d3.max(counties, function(d) { return d['Labor force']})])
+    .domain(d3.extent(counties, function(d) { return Math.abs(d['Labor force'])}))
     .range([3, 50])
 
   var nodes = counties.map(function(d) {
@@ -291,7 +305,7 @@ function ready(error, us, rawCounties) {
     n.x = x
     n.py = y
     n.y = y
-    n.radius = rscale(d['Labor force'])
+    n.radius = rscale(Math.abs(d['Labor force']))
     return n
   })
   nodes.sort(function(a,b) {
@@ -310,9 +324,9 @@ function ready(error, us, rawCounties) {
       .attr("width", mapwidth)
       .attr("height", mapheight);
   svg.append("text")
-    .text("Sized by labor force, colored by unemployment rate")
+    .text("Sized by change in labor force, colored by change in unemployment rate")
     .attr({
-      x: mapwidth/2 - 200,
+      x: mapwidth/2 - 250,
       y: mapheight - 40,
       fill: "#fff"
     })
