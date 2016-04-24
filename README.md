@@ -75,10 +75,10 @@ https://www.census.gov/popest/data/intercensal/county/county2010.html
 PEP_2014_PEPAGESEX
 http://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=PEP_2015_PEPANNRES&src=pt
 
+--------------------
 
-## Team
-------
-@enjalot - [twitter](https://twitter.com/enjalot)
-@lewis500 - [twitter](https://twitter.com/lewislehe)
-@siumei - [linkedin](https://www.linkedin.com/in/siumeiman)
-@syntagmatic - [twitter](https://twitter.com/syntagmatic)
+# Team
+[Ian Johnson](https://twitter.com/enjalot)  
+[Lewis Lehe](https://twitter.com/lewislehe)  
+[Siu-Mei Man](https://www.linkedin.com/in/siumeiman)  
+[Kai Chang](https://twitter.com/syntagmatic)  
