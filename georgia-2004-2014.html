@@ -78,7 +78,6 @@ queue()
     .await(ready);
 
 function ready(error, us, rawCounties2004, rawCounties2014) {
-  var states = topojson.feature(us, us.objects.states).features
   geoCounties = topojson.feature(us, us.objects.counties).features;
   countyHash = {}
   geoCounties.forEach(function(county) {
@@ -113,23 +112,8 @@ function ready(error, us, rawCounties2004, rawCounties2014) {
         cc[prop] -= +county[key]
       }
     })
-    counties.push(props)
   })
 
-  /*
-  mapsvg
-  .selectAll("path")
-    .data(states)
-  .enter().append("path").classed("state-boundary", true)
-    .attr("d", path)
-    */
-
-  var state = states.filter(function(d) {
-    // list of state FIPS codes
-    return d.id === 13; //Georgia
-  })[0]
-  console.log("georgia", state)
-  //clicked(state);
 
   var geoSubset = [];
   geoCounties.forEach(function(c) {

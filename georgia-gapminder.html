@@ -1,0 +1,463 @@
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script src="//d3js.org/queue.v1.min.js"></script>
+<script src="//d3js.org/topojson.v1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.11.2/lodash.min.js"></script>
+<script src="js/d3.parcoords.js"></script>
+<script src="js/divgrid.js"></script>
+<link rel="stylesheet" href="css/d3.parcoords.css"></link>
+<link rel="stylesheet" href="css/style.css"></link>
+
+<style>
+  #parcoords {
+    margin-top: 20px;
+    height: 150px;
+    background-color: #111;
+  }
+  #time {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    width:100%;
+    height: 50px;
+  }
+  #time input {
+    display:flex;
+    width: 300px;
+    margin-top: 0px;
+  }
+  .year {
+    display:flex;
+    color: white;
+    width: 50px;;
+    margin-left: 20px;
+  }
+</style>
+
+<h2 class="title">Georgia 2004</h2>
+<div id="time">
+  <div class="year">2004</div>
+  <input type="range" min=2004 max=2014 value=2004>
+  <div class="year">2014</div>
+</div>
+<div id="parcoords" class="parcoords"></div>
+<div id="parcoords-grid-container">
+  <div id="parcoords-grid"></div>
+</div>
+<svg id="map"></svg>
+<svg id="force"></svg>
+
+<script>
+// Map setup
+var mapsvg = d3.select("#map").append("g");
+var bbox = d3.select("#map").node().getBoundingClientRect();
+var mapwidth = bbox.width;
+var mapheight = bbox.height;
+var scale0 = 4400;
+
+var grid = d3.divgrid();
+
+var firstRun = true;
+
+var allCounties = []
+
+var rekey = {
+  id: "id",
+  name:"name",
+  "labor_force": "Labor force",
+  "unemployment_rate": "Unemployment rate",
+  "annual_avg_estabs_count": "Establishments",
+  "annual_avg_wkly_wage": "Average weekly wage"
+}
+
+d3.selection.prototype.moveToFront = function() {
+    return this.each(function(){
+      this.parentNode.appendChild(this);
+    });
+  };
+
+var zoom = d3.behavior.zoom()
+  .translate([mapwidth / 2, mapheight / 2])
+  .scale(scale0)
+  .scaleExtent([scale0, 10 * scale0])
+  .on("zoom", zoomed);
+
+var projection = d3.geo.mercator()
+  .center([-83.9832453,32.6556200])
+  .scale(scale0)
+  .translate([mapwidth / 2, mapheight / 2]);
+
+var path = d3.geo.path()
+  .projection(projection);
+
+function zoomed() {
+  projection
+    .translate(zoom.translate())
+    .scale(zoom.scale());
+
+  mapsvg.selectAll("path")
+    .attr("d", path);
+
+}
+//mapsvg.call(zoom)
+
+</script>
+
+
+<script>
+// DATA
+queue()
+    .defer(d3.json, "data/us-named.topojson")
+    .defer(d3.csv, "data/ga/counties-joined-2004.csv")
+    .defer(d3.csv, "data/ga/counties-joined-2005.csv")
+    .defer(d3.csv, "data/ga/counties-joined-2006.csv")
+    .defer(d3.csv, "data/ga/counties-joined-2007.csv")
+    .defer(d3.csv, "data/ga/counties-joined-2008.csv")
+    .defer(d3.csv, "data/ga/counties-joined-2009.csv")
+    .defer(d3.csv, "data/ga/counties-joined-2010.csv")
+    .defer(d3.csv, "data/ga/counties-joined-2011.csv")
+    .defer(d3.csv, "data/ga/counties-joined-2012.csv")
+    .defer(d3.csv, "data/ga/counties-joined-2013.csv")
+    .defer(d3.csv, "data/ga/counties-joined-2014.csv")
+    .await(ready);
+
+function ready(error, us) {
+  var countyYears = {}
+  var year = 2004;
+  var years = [];
+  for(var i = 2; i < arguments.length; i++) {
+    years.push(year)
+    countyYears[year] = arguments[i];
+    year++;
+  }
+  console.log("countyYEARS!", countyYears)
+
+  var time = d3.select("#time").select("input")
+    .on("input", function() {
+      var year = +this.value
+      console.log(year)
+      d3.select(".title").text("Georgia " + year)
+      renderYear(year)
+    })
+
+  function renderYear(year) {
+    var rawCounties = countyYears[year]
+    var geoCounties = topojson.feature(us, us.objects.counties).features;
+    countyHash = {}
+    geoCounties.forEach(function(county) {
+      countyHash[county.properties.id] = county; // string FIPS code: STXXX eg 13000 wher ST is state fips code
+    })
+
+    var counties = []
+    rawCounties.forEach(function(county) {
+      var ch = countyHash[county.id]
+      if(!ch) return;
+      var props = {}
+      var keys = Object.keys(county);
+      keys.forEach(function(key) {
+        var prop = rekey[key]
+        if(prop && prop !== "name" && prop !== "id") {
+          props[prop] = +county[key]
+        } else if(prop) {
+          props[prop] = county[key]
+        }
+      })
+      ch.properties = props; // string FIPS code: STXXX eg 13000 wher ST is state fips code
+      counties.push(props)
+    })
+    var geoSubset = [];
+    geoCounties.forEach(function(c) {
+      var sid = "13";
+      var cid = c.id+"";
+      if(cid.slice(0,sid.length) === sid && cid.length - sid.length == 3) {
+        geoSubset.push(c)
+      };
+    })
+    console.log("geoSubst", geoSubset)
+
+    var parcoords = renderParCoords(countyHash, counties)
+    renderMap(countyHash, geoSubset, parcoords)
+    renderForce(countyHash, counties, parcoords)
+  }
+
+  renderYear(2004)
+
+
+  /////////////////////////////////////////////////////////////////////////////
+  // MAP
+  function renderMap(countyHash, geoSubset, parcoords) {
+    var ratescale = d3.scale.linear()
+      .domain(d3.extent(geoSubset, function(d) { return d.properties['Unemployment rate']}))
+      .range(["#111", "steelblue"])
+
+    console.log("COUNTIES", geoSubset.length)
+    mapsvg.append("text")
+    .text("Colored by in unemployment rate")
+    .attr({
+      x: mapwidth/2 - 80,
+      y: mapheight - 40,
+      fill: "#fff"
+    })
+
+    var countyPaths = mapsvg
+      .selectAll("path.county")
+      //.data(geoCounties)
+      .data(geoSubset, function(d) { return d.properties.id})
+
+    countyPaths
+      .enter().append("path").classed("county", true)
+
+    countyPaths.attr("d", path)
+    // interaction on the map
+    .style({
+      fill: function(d) {
+        return ratescale(d.properties['Unemployment rate'])
+      }
+    })
+    .on("mouseover", function(d) {
+      parcoords.highlight([d.properties])
+      d3.select("#parcoords-grid")
+        .datum([d.properties])
+        .call(grid)
+
+      d3.select("#force").selectAll("circle.county")
+        .style({
+          "stroke-width": 1,
+          "stroke-opacity": 0.6
+        })
+        .filter(function(c) { return d.properties.id === c.id})
+        .style({
+          "stroke-width": 3,
+          "stroke-opacity": 1
+        }).moveToFront()
+    })
+    .on("mouseout", function(d) {
+      parcoords.unhighlight(d.properties)
+      d3.select("#force").selectAll("circle.county")
+        .style({
+          "stroke-width": 1,
+          "stroke-opacity": 0.6
+        })
+    })
+    .on("click", function(d) { console.log(d) })
+  }
+
+
+  /////////////////////////////////////////////////////////////////////////////
+  // PARCOORDS
+  function renderParCoords(countyHash, counties) {
+    var color = function(d) { return 'steelblue' };
+    d3.select("#parcoords").selectAll("*").remove()
+
+    var parcoords = d3.parcoords()("#parcoords")
+      .color(color)
+      .composite("source-over")
+      .alpha(0.4);
+
+    parcoords
+      .data(counties)
+      .hideAxis(["name", "id"])
+      .render()
+      .brushMode("1D-axes");
+
+    // create data table, row hover highlighting
+    d3.select("#parcoords-grid")
+      //.datum(counties.slice(0,10))
+      .datum(counties.slice(0,10))
+      .call(grid)
+      .selectAll(".row")
+      .on({
+        "mouseover": function(d) { parcoords.highlight([d]) },
+        "mouseout": parcoords.unhighlight
+      });
+
+    // update data table on brush event
+    parcoords.on("brush", function(d) {
+      d3.select("#parcoords-grid")
+        //.datum(d.slice(0,10))
+        .datum(d)
+        .call(grid)
+        .selectAll(".row")
+        .on({
+          "mouseover": function(d) { parcoords.highlight([d]) },
+          "mouseout": parcoords.unhighlight
+        });
+
+      mapsvg
+      	.selectAll("path.county")
+        .style({
+          stroke: "#fff",
+          "stroke-width": 1,
+          "stroke-opacity": 0.6,
+        })
+        .filter(function(county) {
+          if(d.length === counties.length) return false;
+          return d.indexOf(county.properties) >= 0;
+        })
+        .style({
+          //stroke: "steelblue",
+          "stroke-width": 3,
+          "stroke-opacity": 1,
+        }).moveToFront()
+
+      d3.select("#force").selectAll("circle.county")
+          .style({
+            "stroke-width": 1,
+            "stroke-opacity": 0.6
+          })
+          .filter(function(county) {
+            if(d.length === counties.length) return false;
+            var matches = d.filter(function(a) { return a.id == county.id }).length
+            return matches > 0
+          })
+          .style({
+            "stroke-width": 3,
+            "stroke-opacity": 1
+          }).moveToFront()
+    });
+    return parcoords;
+  }
+  /////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+
+
+  /////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+  // FORCE LAYOUT
+  // starting with example from @mbostock http://bl.ocks.org/mbostock/3231298
+  function renderForce(countyHash, counties, parcoords) {
+    var rscale = d3.scale.sqrt()
+      .domain(d3.extent(counties, function(d) { return Math.abs(d['Labor force'])}))
+      .range([3, 50])
+
+    var ratescale = d3.scale.linear()
+      .domain(d3.extent(counties, function(d) { return d['Unemployment rate']}))
+      .range(["#111", "steelblue"])
+
+
+    var nodes = counties.map(function(d) {
+      var n = _.clone(d);
+      // set up the node to have original position close to centroid
+      var centroid = path.centroid(countyHash[d.id])
+      var x = centroid[0] * 3 - mapwidth
+      var y = centroid[1] * 3 - mapheight
+      n.px = x;
+      n.x = x
+      n.py = y
+      n.y = y
+      n.radius = rscale(Math.abs(d['Labor force']))
+      return n
+    })
+    nodes.sort(function(a,b) {
+      return a.radius - b.radius
+    })
+
+    var force = d3.layout.force()
+        .gravity(0.05)
+        .charge(function(d, i) { return -10; })
+        .nodes(nodes)
+        .size([mapwidth, mapheight]);
+
+    var svg = d3.select("#force")
+        .attr("width", mapwidth)
+        .attr("height", mapheight);
+    svg.append("text")
+      .text("Sized by in labor force, colored by in unemployment rate")
+      .attr({
+        x: mapwidth/2 - 250,
+        y: mapheight - 40,
+        fill: "#fff"
+      })
+
+    var circles = svg.selectAll("circle")
+        .data(nodes, function(d) { return d.id })
+    circles.enter().append("circle").classed("county", true)
+        .call(force.drag)
+        .on("click", function(d) { console.log(d) })
+        .on("mouseover", function(d) {
+          var county = countyHash[d.id].properties
+          parcoords.highlight([county])
+          d3.select("#parcoords-grid")
+            .datum([county])
+            .call(grid)
+
+          d3.select("#map").selectAll("path.county")
+            .style({
+              "stroke-width": 1,
+              "stroke-opacity": 0.6
+            })
+            .filter(function(c) { return county.id === c.properties.id})
+            .style({
+              "stroke-width": 3,
+              "stroke-opacity": 1
+            }).moveToFront()
+        })
+        .on("mouseout", function(d) {
+          var county = countyHash[d.id].properties
+          parcoords.unhighlight(county)
+          d3.select("#map").selectAll("path.county")
+            .style({
+              "stroke-width": 1,
+              "stroke-opacity": 0.6
+            })
+        })
+    circles
+      .attr("r", function(d) { return d.radius; })
+      .style("fill", function(d, i) {
+        return ratescale(d['Unemployment rate'])
+      })
+
+    force.on("tick", function(e) {
+      var q = d3.geom.quadtree(nodes),
+        i = 0,
+        n = nodes.length;
+
+      while (++i < n) q.visit(collide(nodes[i]));
+
+    });
+
+    // TODO: ewww
+    if(firstRun) {
+      force.start()
+      for(var i = 0; i < 300; i++) {
+        force.tick();
+      }
+      force.stop();
+      svg.selectAll("circle")
+        .attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; });
+      firstRun = false;
+    }
+
+    function collide(node) {
+      var r = node.radius + 16,
+          nx1 = node.x - r,
+          nx2 = node.x + r,
+          ny1 = node.y - r,
+          ny2 = node.y + r;
+      return function(quad, x1, y1, x2, y2) {
+        if (quad.point && (quad.point !== node)) {
+          var x = node.x - quad.point.x,
+              y = node.y - quad.point.y,
+              l = Math.sqrt(x * x + y * y),
+              r = node.radius + quad.point.radius;
+          if (l < r) {
+            l = (l - r) / l * .5;
+            node.x -= x *= l;
+            node.y -= y *= l;
+            quad.point.x += x;
+            quad.point.y += y;
+          }
+        }
+        return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
+      };
+    }
+  }
+
+  /////////////////////////////////////////////////////////////////////////////
+
+}
+
+</script>
