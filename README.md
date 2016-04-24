@@ -45,6 +45,9 @@ With more time we would like to:
 [Data slices by county and year](http://www.bls.gov/cew/doc/access/csv_data_slices.htm#ANNUAL_LAYOUT)  
 [BLS Area codes (FIPS)](http://www.bls.gov/cew/doc/titles/area/area_titles.htm)  
 
+## BLS GPS
+[Geographic Profile of Employment and Unemployment](http://www.bls.gov/gps/home.htm)
+
 ## Social Security
 [SSI recipients by county](https://www.ssa.gov/policy/docs/statcomps/ssi_sc/index.html)
 
