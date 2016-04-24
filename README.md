@@ -36,22 +36,22 @@ With more time we would like to:
 
 ## Data Sources
 
-### BLS LAU
+### BLS LAU  
 [Labor force data by county](http://www.bls.gov/lau/home.htm#cntyaa)
 
-## BLS QCEW
+## BLS QCEW  
 [Quarterly Census of Employment and Wages](http://www.bls.gov/cew/cewover.htm)  
 [Directory of downloads per year](http://www.bls.gov/cew/datatoc.htm)  
 [Data slices by county and year](http://www.bls.gov/cew/doc/access/csv_data_slices.htm#ANNUAL_LAYOUT)  
 [BLS Area codes (FIPS)](http://www.bls.gov/cew/doc/titles/area/area_titles.htm)  
 
-## BLS GPS
+## BLS GPS  
 [Geographic Profile of Employment and Unemployment](http://www.bls.gov/gps/home.htm)
 
-## Social Security
+## Social Security  
 [SSI recipients by county](https://www.ssa.gov/policy/docs/statcomps/ssi_sc/index.html)
 
-## US Atlas
+## US Atlas  
 [counties and state geography in topojson format](https://github.com/mbostock/us-atlas)
 
 
