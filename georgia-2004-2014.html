@@ -35,7 +35,7 @@ var allCounties = []
 var rekey = {
   id: "id",
   name:"name",
-  "labor_force": "Labor force change",
+  "labor_force": "Labor force",
   "unemployment_rate": "Unemployment rate change",
   "annual_avg_estabs_count": "Establishments change",
   "annual_avg_wkly_wage": "Average weekly wage change"
@@ -108,7 +108,7 @@ function ready(error, us, rawCounties2004, rawCounties2014) {
     var keys = Object.keys(county);
     keys.forEach(function(key) {
       var prop = rekey[key]
-      if(prop && prop !== "name" && prop !== "id") {
+      if(prop && prop !== "name" && prop !== "id" && prop !== "Labor force") {
         cc[prop] -= +county[key]
       }
     })
@@ -276,7 +276,7 @@ function ready(error, us, rawCounties2004, rawCounties2014) {
   // FORCE LAYOUT
   // starting with example from @mbostock http://bl.ocks.org/mbostock/3231298
   var rscale = d3.scale.sqrt()
-    .domain(d3.extent(counties, function(d) { return Math.abs(d['Labor force change'])}))
+    .domain(d3.extent(counties, function(d) { return Math.abs(d['Labor force'])}))
     .range([3, 50])
 
   var nodes = counties.map(function(d) {
@@ -289,7 +289,7 @@ function ready(error, us, rawCounties2004, rawCounties2014) {
     n.x = x
     n.py = y
     n.y = y
-    n.radius = rscale(Math.abs(d['Labor force change']))
+    n.radius = rscale(Math.abs(d['Labor force']))
     return n
   })
   nodes.sort(function(a,b) {

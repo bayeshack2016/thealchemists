@@ -133,6 +133,15 @@ function ready(error, us) {
     year++;
   }
   console.log("countyYEARS!", countyYears)
+  var rateMax = d3.max(years, function(year) {
+    return d3.max(countyYears[year], function(d) {
+      return +d['unemployment_rate']
+    })
+  })
+  console.log("max", rateMax)
+  var ratescale = d3.scale.linear()
+    .domain([0, rateMax])
+    .range(["#111", "steelblue"])
 
   var time = d3.select("#time").select("input")
     .on("input", function() {
@@ -188,9 +197,7 @@ function ready(error, us) {
   /////////////////////////////////////////////////////////////////////////////
   // MAP
   function renderMap(countyHash, geoSubset, parcoords) {
-    var ratescale = d3.scale.linear()
-      .domain(d3.extent(geoSubset, function(d) { return d.properties['Unemployment rate']}))
-      .range(["#111", "steelblue"])
+
 
     console.log("COUNTIES", geoSubset.length)
     mapsvg.append("text")
@@ -332,9 +339,11 @@ function ready(error, us) {
       .domain(d3.extent(counties, function(d) { return Math.abs(d['Labor force'])}))
       .range([3, 50])
 
+    /*
     var ratescale = d3.scale.linear()
       .domain(d3.extent(counties, function(d) { return d['Unemployment rate']}))
       .range(["#111", "steelblue"])
+    */
 
 
     var nodes = counties.map(function(d) {
@@ -374,7 +383,7 @@ function ready(error, us) {
     var circles = svg.selectAll("circle")
         .data(nodes, function(d) { return d.id })
     circles.enter().append("circle").classed("county", true)
-        .call(force.drag)
+    circles
         .on("click", function(d) { console.log(d) })
         .on("mouseover", function(d) {
           var county = countyHash[d.id].properties

@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<link href='https://fonts.googleapis.com/css?family=Roboto:400,700' rel='stylesheet' type='text/css'>
 <style>
+body {
+  font-family: "Roboto", sans-serif;
+  padding: 20px;
+}
+#footer {
+  width: 100%;
+  float: left;
+  clear:left;
+  margin-top: 30px;
+
+}
 .h1 {
   float: left;
 }
@@ -9,27 +21,80 @@
   clear:left;
   margin-top: 50px;
 }
+.title {
+  font-size: 30px;
+  font-weight: bold;
+}
+.description {
+}
+
+a, a:visited {
+  color: #111;
+  text-decoration: none;
+}
 </style>
 <body>
   <h1>Labor statistics by county</h1>
+  <div class="description">
+    The following visualizations are intended as explorations into the
+    Bureau of Labor Statistic's employment and wage data.
+  </div>
   <div class="section">
     <a href="georgia.html">
       <img src="img/georgia.gif" width=600px><br>
-      Georgia 2004, population vs. unemployment rate
+      <span class="title">
+        Single year: Georgia 2004
+      </span>
+      <p class="description">
+        Investigate differences between counties
+        for a single year of data. An alternative "bubble chart" is used to give
+        a sense of proportionality for counties that have high rates of unemployment
+        but have a very small population.
+      </p>
+    </a>
+  </div>
+
+  <div class="section">
+    <a href="georgia-gapminder.html">
+      <img src="img/georgia-gapminder.gif" width=600px><br>
+      <span class="title">
+        Multiple years: Georgia 2004 - 2014
+      </span>
+      <p class="description">
+        Quickly see the same visualizations as the one above
+        for the years 2004 through 2014. You can clearly see the effect of the 2008-2009 recession
+        as the unemployment rate is color on an absolute scale.
+      </p>
     </a>
   </div>
 
   <div class="section">
     <a href="georgia-2004-2014.html">
       <img src="img/georgia-change.gif" width=600px><br>
-      Georgia changes from 2004 to 2014
+      <span class="title">
+        Compare two years: Georgia from 2004 to 2014
+      </span>
+      <p class="description">
+        Compare two years with each other directly, by taking the difference
+        of each metric (unemployment rate, establishments and average weekly wage) and rendering the difference.
+      </p>
     </a>
   </div>
-  <!--
-  <a href="georgia-pop.html">Georgia Population (Census)</a>
-  <br>
--->
+
+  <div class="section">
+    <span class="description">
+    </span>
+  </div>
 <div id="footer">
+  <h2>Team</h2>
+  Ian Johnson
+  <br>
+  Lewis Lehe
+  <br>
+  Siu-Mei Man
+  <br>
+  Kai Chang
+  <br>
 
 </div>
 </body>
