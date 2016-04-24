@@ -1,14 +1,28 @@
-body { margin:0;position:fixed;top:0;right:0;bottom:0;left:0; }
+body {
+  font-size: 14px;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  margin: 24px;
+  background: #fcfcfc;
+  line-height: 1.45em;
+ }
+
+
+
+/* /////////////////////////////////////////////////////////////////////
+Map
+///////////////////////////////////////////////////////////////////// */
 #state-grid {
-  position:absolute;
-  top: 0;
+  position:fixed;
+  bottom: 200px;
   left: 0;
   display: none;
 }
 #map {
-  position: absolute;
+  position: fixed;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 450px);
+  top: 250px;
+  bottom: 200px;
 }
 .state {
   cursor: pointer;
@@ -28,10 +42,67 @@ body { margin:0;position:fixed;top:0;right:0;bottom:0;left:0; }
   text-anchor: middle;
 }
 .state-boundary {
-  fill: none;
+  fill: #fff;
   stroke: #111;
 }
 .county {
   fill: #fff;
   stroke: #111;
+}
+
+/* /////////////////////////////////////////////////////////////////////
+Parcoords
+///////////////////////////////////////////////////////////////////// */
+
+#parcoords-grid {
+  height: 200px;
+  position: fixed;
+  bottom: 0;
+}
+.row, .header { clear: left; font-size: 12px; line-height: 18px; height: 18px; }
+.row:nth-child(odd) { background: rgba(0,0,0,0.05); }
+.header { font-weight: bold; }
+.cell { float: left; overflow: hidden; white-space: nowrap; width: 70px; height: 18px; }
+
+a {
+  color: #555;
+}
+a:hover {
+  color: #000;
+}
+ul {
+  margin: 0 20px;
+  padding: 0;
+}
+.dark {
+  background: #222;
+}
+p {
+  width: 560px;
+}
+pre {
+  color: #444;
+  font-family: Ubuntu Mono, Monaco, monospace;
+  padding: 4px 8px;
+  background: #f2f2f2;
+  border: 1px solid #ccc;
+}
+h1 small {
+  font-weight: normal;
+  font-size: 0.5em;
+}
+h3 {
+  margin-top: 40px;
+}
+.float {
+  float: left;
+}
+.centered {
+  text-align: center;
+}
+.hide {
+  display: none;
+}
+input {
+  font-size: 16px;
 }

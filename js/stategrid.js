@@ -89,7 +89,7 @@ function clicked(d) {
   .remove();
 
   var counties = [];
-  allCounties.forEach(function(c) {
+  geoCounties.forEach(function(c) {
     var sid = d.id+"";
     var cid = c.id+"";
     if(cid.slice(0,sid.length) === sid && cid.length - sid.length == 3) counties.push(c);
