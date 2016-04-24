@@ -5,7 +5,8 @@ d3 = require 'd3'
 request = require 'request'
 async = require 'async'
 
-dataDir = path.join __dirname, "../data/"
+# TODO make this not georgia specific
+dataDir = path.join __dirname, "../data/ga"
 
 
 # these two 120mb zip files have all the county data we want
@@ -47,7 +48,7 @@ processYear = (year) ->
         county[key] = row[key]
 
   csv = d3.csv.format(counties)
-  fs.writeFileSync "../data/counties-joined-#{year}.csv", csv
+  fs.writeFileSync dataDir + "counties-joined-#{year}.csv", csv
 
 d3.range(2000, 2015).forEach (year) ->
   processYear(year + "")

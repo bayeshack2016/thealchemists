@@ -86,6 +86,7 @@ function ready(error, us, counties) {
     ch = countyHash[county.id]
     if(!ch) return;
     ch.properties = county; // string FIPS code: STXXX eg 13000 wher ST is state fips code
+
   })
 
   mapsvg

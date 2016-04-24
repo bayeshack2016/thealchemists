@@ -5,7 +5,7 @@ d3 = require 'd3'
 request = require 'request'
 async = require 'async'
 
-dataDir = path.join __dirname, "../data/"
+dataDir = path.join __dirname, "../data/ga"
 
 processYear = (year) ->
   console.log year
@@ -31,7 +31,7 @@ processYear = (year) ->
       county[key] = row[key]
 
   csv = d3.csv.format(counties)
-  fs.writeFileSync "../data/counties-joined-#{year}.csv", csv
+  fs.writeFileSync dataDir + "counties-joined-#{year}.csv", csv
 
 d3.range(2000, 2015).forEach (year) ->
   processYear (year + "")

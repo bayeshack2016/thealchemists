@@ -3,7 +3,8 @@ path = require 'path'
 d3 = require 'd3'
 _ = require 'lodash'
 
-dataDir = path.join __dirname, "../data/"
+# TODO: make this not georgia specific
+dataDir = path.join __dirname, "../data/ga"
 
 loadTopo = (filename) ->
   json = JSON.parse(fs.readFileSync(filename).toString())
@@ -36,7 +37,7 @@ processPopulations2010s = (year, filename) ->
     countyHash[fips].properties.pop = pop
   rows = Object.keys(countyHash).map (fips) ->
     return countyHash[fips].properties
-  fs.writeFileSync "../data/counties-joined-#{year}.csv", d3.csv.format(rows)
+  fs.writeFileSync dataDir + "counties-joined-#{year}.csv", d3.csv.format(rows)
 
 
 processPopulations2000s = (year, filename) ->
@@ -53,7 +54,7 @@ processPopulations2000s = (year, filename) ->
       county.properties.pop += +row["POPESTIMATE#{year}"]
   rows = Object.keys(countyHash).map (fips) ->
     return countyHash[fips].properties
-  fs.writeFileSync "../data/counties-joined-#{year}.csv", d3.csv.format(rows)
+  fs.writeFileSync dataDir + "counties-joined-#{year}.csv", d3.csv.format(rows)
 
 ###
 processPopulations1994 = (countyHash, filename) ->
