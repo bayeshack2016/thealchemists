@@ -5,25 +5,21 @@ An exploration of labor force metrics changing over time at the county level.
 ## Visualizations
 
 ![single year](http://bayeshack2016.github.io/thealchemists/img/georgia.png)
-### Single Year: Georgia 2004
-Investigate differences between counties
-for a single year of data. An alternative "bubble chart" is used to give
+### Single Year: Georgia 2004  
+Investigate differences between counties for a single year of data. An alternative "bubble chart" is used to give
 a sense of proportionality for counties that have high rates of unemployment
 but have a very small population.
 
 ----------
 
 ![multiple years](http://bayeshack2016.github.io/thealchemists/img/georgia-gapminder.gif)
-### Multiple years: Georgia 2004 - 2014
-Quickly see the same visualizations as the one above
-for the years 2004 through 2014. You can clearly see the effect of the 2008-2009 recession
-as the unemployment rate is color on an absolute scale.
+### Multiple years: Georgia 2004 - 2014  
+Quickly see the same visualizations as the one above for the years 2004 through 2014. You can clearly see the effect of the 2008-2009 recession as the unemployment rate is color on an absolute scale.
 ----------
 
 ![compare 2 years](http://bayeshack2016.github.io/thealchemists/img/georgia-2004-2014.png)
-### Compare two years: Georgia from 2004 to 2014
-Compare two years with each other directly, by taking the difference
-of each metric (unemployment rate, establishments and average weekly wage) and rendering the difference.
+### Compare two years: Georgia from 2004 to 2014  
+Compare two years with each other directly, by taking the difference of each metric (unemployment rate, establishments and average weekly wage) and rendering the difference.
 ----------
 
 ## Data Sources
