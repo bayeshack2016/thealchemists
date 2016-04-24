@@ -70,8 +70,8 @@ Parcoords
 ///////////////////////////////////////////////////////////////////// */
 
 #parcoords {
-  top: 0;
-  height: 250px;
+  margin-top: 20px;
+  height: 230px;
   background-color: #111;
 }
 #parcoords text {

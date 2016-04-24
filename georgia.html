@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="css/d3.parcoords.css"></link>
 <link rel="stylesheet" href="css/style.css"></link>
 
-<div id="parcoords" class="parcoords" style="height:250px;"></div>
+<div id="parcoords" class="parcoords"></div>
 <div id="parcoords-grid-container">
   <div id="parcoords-grid"></div>
 </div>
@@ -101,11 +101,13 @@ function ready(error, us, rawCounties) {
     counties.push(props)
   })
 
+  /*
   mapsvg
   .selectAll("path")
     .data(states)
   .enter().append("path").classed("state-boundary", true)
     .attr("d", path)
+    */
 
   var state = states.filter(function(d) {
     // list of state FIPS codes
@@ -170,6 +172,7 @@ function ready(error, us, rawCounties) {
   // create data table, row hover highlighting
   var grid = d3.divgrid();
   d3.select("#parcoords-grid")
+    //.datum(counties.slice(0,10))
     .datum(counties.slice(0,10))
     .call(grid)
     .selectAll(".row")
@@ -181,7 +184,8 @@ function ready(error, us, rawCounties) {
   // update data table on brush event
   parcoords.on("brush", function(d) {
     d3.select("#parcoords-grid")
-      .datum(d.slice(0,10))
+      //.datum(d.slice(0,10))
+      .datum(d)
       .call(grid)
       .selectAll(".row")
       .on({
