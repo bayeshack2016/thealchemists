@@ -67,7 +67,7 @@ countyHash = {}
 counties.forEach (county) ->
   countyHash[county.properties.id] = county; # string FIPS code: STXXX eg 13000 wher ST is state fips code
 
-processPopulations1994 countyHash, dataDir + "/Georgia-County-age-sex-1990-1999.tsv"
+#processPopulations1994 countyHash, dataDir + "/Georgia-County-age-sex-1990-1999.tsv"
 processPopulations2004 countyHash, dataDir + "/CO-EST00INT-AGESEX-5YR.csv"
 processPopulations2014 countyHash, dataDir + "/PEP_2014_PEPAGESEX_with_ann.csv"
 

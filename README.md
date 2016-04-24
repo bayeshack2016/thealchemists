@@ -30,7 +30,12 @@ http://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid
 
 
 ## BLS QCEW
+[Quarterly Census of Employment and Wages](http://www.bls.gov/cew/cewover.htm)
+http://www.bls.gov/cew/datatoc.htm
+
+Data slices by county
 http://www.bls.gov/cew/doc/access/csv_data_slices.htm#ANNUAL_LAYOUT
+
 http://www.bls.gov/cew/data/api/2014/1/area/13000.csv
 
 BLS Area codes (FIPS)
