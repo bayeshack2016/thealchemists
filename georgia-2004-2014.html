@@ -35,10 +35,10 @@ var allCounties = []
 var rekey = {
   id: "id",
   name:"name",
-  "labor_force": "Labor force",
-  "unemployment_rate": "Unemployment rate",
-  "annual_avg_estabs_count": "Establishments",
-  "annual_avg_wkly_wage": "Weekly wage"
+  "labor_force": "Labor force change",
+  "unemployment_rate": "Unemployment rate change",
+  "annual_avg_estabs_count": "Establishments change",
+  "annual_avg_wkly_wage": "Average weekly wage change"
 }
 
 var zoom = d3.behavior.zoom()
@@ -161,9 +161,9 @@ function ready(error, us, rawCounties2004, rawCounties2014) {
 
   console.log("COUNTIES", counties.length)
   mapsvg.append("text")
-  .text("Colored by unemployment rate")
+  .text("Colored by change in unemployment rate")
   .attr({
-    x: mapwidth/2 - 50,
+    x: mapwidth/2 - 80,
     y: mapheight - 40,
     fill: "#fff"
   })
@@ -249,7 +249,7 @@ function ready(error, us, rawCounties2004, rawCounties2014) {
   };
   // interaction on the map
   var ratescale = d3.scale.linear()
-  .domain(d3.extent(counties, function(d) { return d['Unemployment rate']}))
+  .domain(d3.extent(counties, function(d) { return d['Unemployment rate change']}))
   .range(["#111", "steelblue"])
 
   var countyPaths = mapsvg
@@ -258,7 +258,7 @@ function ready(error, us, rawCounties2004, rawCounties2014) {
       fill: function(d) {
         //return emscale(d.properties.employed)
         //return unscale(d.properties.unemployed)
-        return ratescale(d.properties['Unemployment rate'])
+        return ratescale(d.properties['Unemployment rate change'])
       }
     })
     .on("mouseover", function(d) {
@@ -292,7 +292,7 @@ function ready(error, us, rawCounties2004, rawCounties2014) {
   // FORCE LAYOUT
   // starting with example from @mbostock http://bl.ocks.org/mbostock/3231298
   var rscale = d3.scale.sqrt()
-    .domain(d3.extent(counties, function(d) { return Math.abs(d['Labor force'])}))
+    .domain(d3.extent(counties, function(d) { return Math.abs(d['Labor force change'])}))
     .range([3, 50])
 
   var nodes = counties.map(function(d) {
@@ -305,7 +305,7 @@ function ready(error, us, rawCounties2004, rawCounties2014) {
     n.x = x
     n.py = y
     n.y = y
-    n.radius = rscale(Math.abs(d['Labor force']))
+    n.radius = rscale(Math.abs(d['Labor force change']))
     return n
   })
   nodes.sort(function(a,b) {
@@ -336,7 +336,7 @@ function ready(error, us, rawCounties2004, rawCounties2014) {
     .enter().append("circle").classed("county", true)
       .attr("r", function(d) { return d.radius; })
       .style("fill", function(d, i) {
-        return ratescale(d['Unemployment rate'])
+        return ratescale(d['Unemployment rate change'])
       })
       .call(force.drag)
       .on("click", function(d) { console.log(d) })
