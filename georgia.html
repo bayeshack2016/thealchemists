@@ -124,6 +124,8 @@ function ready(error, us, rawCounties) {
   })
   console.log("geoSubst", geoSubset)
 
+  /////////////////////////////////////////////////////////////////////////////
+  // MAP
   var countyPaths = mapsvg
     .selectAll("path.county")
     //.data(geoCounties)
@@ -140,7 +142,14 @@ function ready(error, us, rawCounties) {
     .transition()
     .duration(800)
 
-    console.log("COUNTIES", counties.length)
+  console.log("COUNTIES", counties.length)
+  mapsvg.append("text")
+  .text("Colored by unemployment rate")
+  .attr({
+    x: mapwidth/2 - 50,
+    y: mapheight - 40,
+    fill: "#fff"
+  })
 
 
   /////////////////////////////////////////////////////////////////////////////
@@ -295,6 +304,13 @@ function ready(error, us, rawCounties) {
   var svg = d3.select("#force")
       .attr("width", mapwidth)
       .attr("height", mapheight);
+  svg.append("text")
+    .text("Sized by population, colored by unemployment rate")
+    .attr({
+      x: mapwidth/2 - 200,
+      y: mapheight - 40,
+      fill: "#fff"
+    })
 
   svg.selectAll("circle")
       .data(nodes.slice(1))

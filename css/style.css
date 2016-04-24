@@ -16,7 +16,7 @@ Map
 #map {
   position: fixed;
   width: 49%;
-  height: calc(100% - 350px);
+  height: calc(100% - 370px);
   top: 250px;
   bottom: 100px;
 }
@@ -49,6 +49,10 @@ Force
   top: 250px;
   bottom: 100px;
   right: 0;
+}
+#force::after {
+  color: #fff;
+  content: "Sized by population, colored by unemployment rate"
 }
 circle.county {
   stroke: #ddd;
