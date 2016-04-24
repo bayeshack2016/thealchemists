@@ -16,6 +16,7 @@ dataDir = path.join __dirname, "../data/"
 #    data/2014.annual.by_area
 
 processYear = (year) ->
+  console.log year
   counties = d3.csv.parse(fs.readFileSync(dataDir + "counties-joined-#{year}.csv").toString())
   countyHash = {}
   counties.forEach (county) ->
@@ -37,7 +38,7 @@ processYear = (year) ->
     county = countyHash[countyId]
     return unless county
     rows = d3.csv.parse fs.readFileSync(yearDir + "/" + filename).toString()
-    console.log countyId#, rows[0]
+    #console.log countyId#, rows[0]
     rows.forEach (row) ->
       # TODO: filter down to just agg level and industries we may care about
       # for now, just use totals
@@ -48,6 +49,8 @@ processYear = (year) ->
   csv = d3.csv.format(counties)
   fs.writeFileSync "../data/counties-joined-#{year}.csv", csv
 
+d3.range(2000, 2015).forEach (year) ->
+  processYear(year + "")
 
-processYear('2004')
-processYear('2014')
+#processYear('2004')
+#processYear('2014')

@@ -82,7 +82,7 @@ console.log "counties", counties.length
 #processPopulations2000s '2000', dataDir + "/CO-EST00INT-AGESEX-5YR.csv"
 #processPopulations2000s '2004', dataDir + "/CO-EST00INT-AGESEX-5YR.csv"
 
-d3.range(2000, 2010).forEach (year) ->
+d3.range(2004, 2010).forEach (year) ->
   processPopulations2000s year + "", dataDir + "/CO-EST00INT-AGESEX-5YR.csv"
 
 d3.range(2010, 2015).forEach (year) ->
