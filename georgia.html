@@ -71,7 +71,7 @@ mapsvg.call(zoom)
 // DATA
 queue()
     .defer(d3.json, "data/us-named.topojson")
-    .defer(d3.csv, "data/counties-joined-2004.csv")
+    .defer(d3.csv, "data/ga/counties-joined-2004.csv")
     //.defer(d3.csv, "data/counties-joined-2014.csv")
     .await(ready);
 
@@ -100,6 +100,8 @@ function ready(error, us, counties) {
   })[0]
   console.log("georgia", state)
   clicked(state);
+
+  console.log("COUNTIES", counties.length)
 
 
   /////////////////////////////////////////////////////////////////////////////
