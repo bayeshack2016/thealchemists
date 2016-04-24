@@ -24,6 +24,16 @@ Compare two years with each other directly, by taking the difference of each met
 
 ----------
 
+### Further work
+
+With more time we would like to:
+  * explore similar techniques for showing all the counties at once.  
+  * investigate SSI disability claims alongside labor metrics
+  * investigate more granular wage and establishment data (breaking down by industry code)
+  * explore more visualization types, particularly the [commet chart](http://bl.ocks.org/zanarmstrong/6b9277e3a06679010358) for showing changes in aggregate statistics over time
+  * explore rural vs. metropolitan changes (town populations declining http://blockbuilder.org/enjalot/fe88df78ff6982c11cb92002b7410d84)
+
+
 ## Data Sources
 
 ### BLS LAU
@@ -34,6 +44,9 @@ Compare two years with each other directly, by taking the difference of each met
 [Directory of downloads per year](http://www.bls.gov/cew/datatoc.htm)  
 [Data slices by county and year](http://www.bls.gov/cew/doc/access/csv_data_slices.htm#ANNUAL_LAYOUT)  
 [BLS Area codes (FIPS)](http://www.bls.gov/cew/doc/titles/area/area_titles.htm)  
+
+## Social Security
+[SSI recipients by county](https://www.ssa.gov/policy/docs/statcomps/ssi_sc/index.html)
 
 ## US Atlas
 [counties and state geography in topojson format](https://github.com/mbostock/us-atlas)
