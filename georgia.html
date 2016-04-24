@@ -101,19 +101,7 @@ function ready(error, us, counties) {
   console.log("georgia", state)
   clicked(state);
 
-  /////////////////////////////////////////////////////////////////////////////
 
-
-  var countyPaths = mapsvg
-  	.selectAll("path.county")
-    .style({
-      fill: function(d) {
-        //return emscale(d.properties.employed)
-        //return unscale(d.properties.unemployed)
-        //return ratescale(d.properties.rate)
-      }
-    })
-  /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
   // PARCOORDS
   var color = function(d) { return 'steelblue' };
@@ -149,7 +137,43 @@ function ready(error, us, counties) {
         "mouseover": function(d) { parcoords.highlight([d]) },
         "mouseout": parcoords.unhighlight
       });
+
+    // dirty hack
+    var k = 5.7
+    var countyPaths = mapsvg
+    	.selectAll("path.county")
+      .style({
+        stroke: "#111",
+        "stroke-width": 1 / k
+      })
+      .filter(function(county) {
+        return d.indexOf(county.properties) >= 0;
+      })
+      .style({
+        stroke: "steelblue",
+        "stroke-width": 3 / k
+      })
+
+
   });
+  /////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////
+  // interaction on the map
+  var countyPaths = mapsvg
+  	.selectAll("path.county")
+    .style({
+      fill: function(d) {
+        //return emscale(d.properties.employed)
+        //return unscale(d.properties.unemployed)
+        //return ratescale(d.properties.rate)
+      }
+    })
+    .on("mouseover", function(d) {
+      parcoords.highlight([d.properties])
+    })
+    .on("mouseout", function(d) {
+      parcoords.unhighlight(d.properties)
+    })
   /////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////
   // FORCE LAYOUT
