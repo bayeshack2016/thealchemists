@@ -25,7 +25,6 @@ Compare two years with each other directly, by taking the difference of each met
 ----------
 
 ## Data Sources
-We've investigated
 
 ### BLS LAU
 [Labor force data by county](http://www.bls.gov/lau/home.htm#cntyaa)
